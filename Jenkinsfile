@@ -5,27 +5,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Getting the source code'
+                echo 'Getting code from GitHub'
                 checkout scm
             }
         }
 
-        stage('Build') {
-            steps {
-                echo 'Building the HTML application'
-                bat 'dir'
-            }
-        }
-
-        stage('Test') {
+        stage('Test HTML') {
             steps {
                 bat 'if exist index.html (echo HTML file found) else (exit 1)'
             }
         }
 
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                echo 'HTML application pipeline completed'
+                bat 'docker build -t student-app:v1 .'
+            }
+        }
+
+        stage('Verify Docker Image') {
+            steps {
+                bat 'docker images student-app'
             }
         }
     }
